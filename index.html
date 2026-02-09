@@ -1075,7 +1075,41 @@ function processExport() {
 }
 
 
-        function exportBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({buses,schedules,expenses,passwords})], {type:'application/json'})); a.download=`backup.json`; a.click(); }
+function exportBackup() {
+    // 1. Buat format tanggal dan waktu (Timestamp)
+    const sekarang = new Date();
+    const tgl = sekarang.getDate().toString().padStart(2, '0');
+    const bln = (sekarang.getMonth() + 1).toString().padStart(2, '0');
+    const thn = sekarang.getFullYear();
+    const jam = sekarang.getHours().toString().padStart(2, '0');
+    const mnt = sekarang.getMinutes().toString().padStart(2, '0');
+    
+    const timestamp = `${tgl}${bln}${thn}_${jam}${mnt}`; // Hasilnya: 09022026_1440
+
+    // 2. Siapkan data untuk di-backup
+    const dataBackup = {
+        buses: buses,
+        schedules: schedules,
+        expenses: expenses,
+        passwords: passwords
+    };
+
+    // 3. Proses pengunduhan file
+    const a = document.createElement('a');
+    const file = new Blob([JSON.stringify(dataBackup)], { type: 'application/json' });
+    a.href = URL.createObjectURL(file);
+    
+    // Nama file sekarang menyertakan timestamp
+    a.download = `backup_smartbus_${timestamp}.json`; 
+    
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+}
+
+
+
         function importData(e) { const r=new FileReader(); r.onload=(ev)=>{ const d=JSON.parse(ev.target.result); buses=d.buses||[]; schedules=d.schedules||[]; expenses=d.expenses||[]; passwords=d.passwords||passwords; save(); renderAll(); }; r.readAsText(e.target.files[0]); }
 
 
