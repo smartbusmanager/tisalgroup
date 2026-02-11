@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMART BUS MANAGER v36.0</title>
+    <title>SMART BUS MANAGER v3.6</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -12,21 +12,104 @@
             --dark: #343a40; --shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         body { font-family: 'Inter', 'Segoe UI', sans-serif; margin: 0; background-color: #eef2f7; color: #333; line-height: 1.6; }
-        
-        /* --- KODE LOGIN (DITAMBAHKAN) --- */
-        #login-page { position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, var(--primary), #003d6b); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-card { background: white; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; }
-        .login-card select, .login-card input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
-        #main-app { display: none; }
-        .badge-user { background: #eef2f7; color: #555; border: 1px solid #ddd; font-size: 0.65rem; margin-top: 5px; }
 
-        /* --- CSS ASLI INDEX1 --- */
-        .header { background: linear-gradient(135deg, var(--primary), #003d6b); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 1000; }
+        /* --- UI LOGIN PREMIUM --- */
+        #login-page { 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=2069') no-repeat center center/cover;
+            display: flex; align-items: center; justify-content: center; z-index: 9999; 
+        }
+
+        #login-page::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(0, 90, 156, 0.8), rgba(0, 61, 107, 0.9));
+            z-index: 1;
+        }
+
+        .login-card { 
+            position: relative; z-index: 2;
+            background: rgba(255, 255, 255, 0.95); padding: 40px; 
+            border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            width: 90%; max-width: 400px; text-align: center;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .login-logo {
+            background: var(--primary); color: white; width: 70px; height: 70px;
+            line-height: 70px; border-radius: 50%; font-size: 2rem;
+            margin: 0 auto 20px; box-shadow: var(--shadow);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .login-card h2 { margin-bottom: 5px; color: var(--dark); font-weight: 800; }
+        .login-card p { color: #666; font-size: 0.9rem; margin-bottom: 25px; }
+
+        .login-card select, .login-card input { 
+            width: 100%; padding: 14px; margin: 10px 0; 
+            border: 1.5px solid #eee; border-radius: 10px; font-size: 1rem; 
+            transition: 0.3s; background: #f9f9f9; box-sizing: border-box;
+        }
+
+        .login-card input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(0,90,156,0.1); }
+
+        .btn-login {
+            width: 100%; padding: 14px; border-radius: 10px; 
+            background: var(--primary); color: white; font-weight: bold;
+            font-size: 1rem; cursor: pointer; border: none; margin-top: 15px;
+            transition: 0.3s; box-shadow: 0 4px 12px rgba(0,90,156,0.3);
+            display: block;
+        }
+
+        .btn-login:hover { background: #004a80; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,90,156,0.4); }
+
+        /* --- CSS APLIKASI UTAMA --- */
+        #main-app { display: none; }
+        .header {
+    background: linear-gradient(135deg, var(--primary), #003d6b);
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    
+    /* TAMBAHKAN ATAU PASTIKAN KODE DI BAWAH INI ADA */
+    width: 100%; 
+    box-sizing: border-box; /* Agar padding tidak menambah lebar elemen */
+    left: 0;
+}
         .header h1 { margin: 0; font-size: 1.3rem; letter-spacing: 1px; }
-        .container { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 20px; max-width: 1600px; margin: auto; }
-        @media (min-width: 1024px) { .container { grid-template-columns: 1.5fr 1.5fr; } }
-        .sidebar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        @media (max-width: 768px) { .sidebar-grid { grid-template-columns: 1fr; } }
+        .container { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 20px; 
+    padding: 20px; 
+    /* Ubah max-width menjadi 100% agar memenuhi layar */
+    max-width: 98%; 
+    margin: auto; 
+}
+        @media (min-width: 1024px) { 
+    .container { 
+        /* Memberikan porsi lebih besar untuk konten utama (kiri) 
+           dan sisa yang cukup untuk sidebar (kanan) */
+        grid-template-columns: 1.8fr 1.2fr; 
+    } 
+}
+        .sidebar-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px; 
+    align-items: start;
+}
+        @media (max-width: 1200px) {
+    .sidebar-grid {
+        grid-template-columns: 1fr; /* Jadi satu kolom kalau layar mulai sempit */
+    }
+}
+
         .card { background: white; padding: 18px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 20px; border: none; }
         .card h3 { margin-top: 0; color: var(--primary); font-size: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .filter-box { background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -65,34 +148,60 @@
 </head>
 <body>
 
-    <div id="login-page">
-        <div class="login-card">
-            <h2 style="color: var(--primary);">🚍 ERA Trans User Login</h2>
-            <select id="user-select">
-                <option value="Agus">Agus</option>
-                <option value="Rudi">Rudi</option>
-                <option value="Admin">Admin Utama</option>
-            </select>
-            <input type="password" id="user-pass" placeholder="Password" onkeypress="if(event.key === 'Enter') handleLogin()">
-            <button class="btn-blue" style="width: 100%; justify-content: center; padding: 12px;" onclick="handleLogin()">MASUK APLIKASI</button>
+<div id="login-page">
+    <div class="login-card">
+        <div class="login-logo" style="background: none; box-shadow: none; width: 100%; height: auto; margin-bottom: -110px;">
+    <img src="https://raw.githubusercontent.com/Rahmat1991-coder/jadwalbus/main/logo.png" 
+         alt="Logo Utama Smart Bus Manager" 
+         style="width: 380px; height: auto; object-fit: contain;">
+</div>
+        
+        <p style="margin-bottom: -10px; font-weight: 500; color: #666;">Dedicated to :</p>
+        
+        <h2 style="font-size: 2rem; margin-top: 0; margin-bottom: -20px; color: var(--primary); letter-spacing: 0px;">TISAL Group</h2>
+        
+        <p style="margin-bottom: 20px; font-size: 0.85rem; color: #888;">Bus Pariwisata Dengan Armada Kelas Eksekutif</p>
+        
+        <div style="text-align: left; margin-bottom: -10px;"><label style="font-size: 0.8rem; font-weight: bold; color: #555;">Pilih Pengguna:</label></div>
+<select id="user-select">
+    <option value="Agus">Agus (Driver)</option>
+    <option value="Dani">Dani (Admin)</option>
+    <option value="Owner">Owner (Pemilik)</option>
+	<option value="Admin">Admin Utama</option>     </select>
+        
+        <div style="text-align: left; margin-bottom: -10px;"><label style="font-size: 0.8rem; font-weight: bold; color: #555;">Password:</label></div>
+        <input type="password" id="user-pass" placeholder="masukkan password" onkeypress="if(event.key === 'Enter') handleLogin()">
+        
+        <button class="btn-login" onclick="handleLogin()">MASUK KE SISTEM</button>
+        
+        <div style="margin-top: 15px; font-size: 0.75rem; color: #999;">
+            SMART BUS MANAGER v3.6 <br>
+            &copy; 2026 Rahmat Saleh
+        </div>
+    </div>
+</div>
+
+    <div id="main-app">
+<header class="header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="https://raw.githubusercontent.com/Rahmat1991-coder/jadwalbus/main/logo2.png" 
+     alt="Logo Header" 
+     style="height: 80px; width: auto; filter: brightness(0) invert(1);">
+        <div>
+            <h1 style="margin: 0; font-size: 1.3rem;">SMART BUS MANAGER <span style="font-weight:300">v3.6</span></h1>
+            <small id="current-user-display" style="color: #fff; opacity: 0.9; font-weight: bold;"></small>
         </div>
     </div>
 
-    <div id="main-app">
-        <header class="header">
-            <div>
-                <h1>🚍 SMART BUS MANAGER <span style="font-weight:300">v36.0</span></h1>
-                <small id="current-user-display" style="color: #fff; opacity: 0.9; font-weight: bold;"></small>
-            </div>
-            <div style="display:flex; gap:8px;">
-                <button class="btn-orange" onclick="openAccountSettings()">⚙️ Setting Akun</button>
-                <button class="btn-red" style="padding: 5px 10px;" onclick="handleLogout()">🚪 Log Out</button>
-                <button class="btn-green" onclick="openExportModal()">📊 Export Data</button>
-                <button class="btn-gray" onclick="exportBackup()">📥 Backup All</button>
-                <button class="btn-gray" onclick="document.getElementById('importFile').click()">📤 Restore</button>
-                <input type="file" id="importFile" style="display:none" onchange="importData(event)">
-            </div>
-        </header>
+    <div style="display: flex; gap: 8px; margin-left: auto;">
+        <button class="btn-orange" onclick="openAccountSettings()">⚙️ Setting Akun</button>
+        <button class="btn-red" style="padding: 5px 10px;" onclick="handleLogout()">🚪 Log Out</button>
+        <button class="btn-green" onclick="openExportModal()">📊 Export Data</button>
+        <button class="btn-gray" onclick="exportBackup()">📥 Backup All</button>
+        <button class="btn-gray" onclick="document.getElementById('importFile').click()">📤 Restore</button>
+        <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+    </div>
+</header>
 
         <div class="container">
             <div class="main-content">
@@ -105,6 +214,7 @@
                             <button class="btn-blue" onclick="changeMonth(1)">▶</button>
                         </div>
                         <div style="display:flex; gap:8px;">
+						<button class="btn-blue" onclick="openBusStatsModal()">📊 Statistik Armada</button>
                             <button class="btn-orange" onclick="openExpenseModal()">💸 Biaya OPS</button>
                             <button class="btn-gray" onclick="openFleetModal()">🚌 Armada</button>
                             <button class="btn-blue" onclick="openScheduleModal()">🗓️ Jadwal</button>
@@ -147,7 +257,7 @@
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <div style="background: var(--primary); color: white; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: bold; font-size: 0.8rem;">SB</div>
                             <div>
-                                <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">SMART BUS MANAGER v36.0</div>
+                                <div style="font-size: 0.8rem; font-weight: bold; color: var(--primary);">SMART BUS MANAGER v3.6</div>
                                 <div style="font-size: 0.7rem; color: #888;">Sistem Manajemen Operasional & Penjadwalan</div>
                             </div>
                         </div>
@@ -158,6 +268,63 @@
                     </div>
                 </div>
             </div>
+
+
+<div id="modal-bus-stats" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:15px;">
+            <h3>📈 Performa & Histori Armada</h3>
+            <button class="btn-red" onclick="closeModal()">X</button>
+        </div>
+		
+<div style="margin-bottom: 15px; text-align: right;">
+    <button class="btn-green" onclick="exportBusStatsToExcel()">📥 Download Laporan (Excel)</button>
+</div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+            <div style="flex: 1;">
+                <label style="font-size: 0.8rem; font-weight: bold;">Pilih Bulan:</label>
+                <select id="stats-month-filter" onchange="openBusStatsModal()" style="width: 100%; padding: 8px;">
+                    <option value="all">-- Semua Bulan --</option>
+                    <option value="01">Januari</option>
+                    <option value="02">Februari</option>
+                    <option value="03">Maret</option>
+                    <option value="04">April</option>
+                    <option value="05">Mei</option>
+                    <option value="06">Juni</option>
+                    <option value="07">Juli</option>
+                    <option value="08">Agustus</option>
+                    <option value="09">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                </select>
+            </div>
+<div style="flex: 1;">
+    <label style="font-size: 0.8rem; font-weight: bold;">Pilih Tahun:</label>
+    <select id="stats-year-filter" onchange="openBusStatsModal()" style="width: 100%; padding: 8px;">
+    </select>
+</div>
+        </div>
+        
+        <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+                <thead>
+                    <tr style="background: var(--primary); color: white;">
+                        <th style="padding:10px;">Nama Unit</th>
+                        <th style="padding:10px;">Job</th>
+                        <th style="padding:10px;">Omzet</th>
+                        <th style="padding:10px;">Biaya Ops</th>
+                        <th style="padding:10px;">Profit</th>
+                    </tr>
+                </thead>
+                <tbody id="bus-performance-body"></tbody>
+            </table>
+        </div>
+        <button class="btn-gray" style="width:100%; margin-top:20px;" onclick="closeModal()">TUTUP</button>
+    </div>
+</div>
+
 
             <div class="sidebar-grid">
                 <div class="sidebar-section">
@@ -191,14 +358,40 @@
         </div>
     </div>
 
-    <div id="modal-account" class="modal"><div class="modal-content">
-        <h2>⚙️ Pengaturan Password Akun</h2>
-        <div class="form-group"><label>Password Akun: <b>Agus</b></label><input type="text" id="set-pass-agus"></div>
-        <div class="form-group"><label>Password Akun: <b>Rudi</b></label><input type="text" id="set-pass-rudi"></div>
-        <div class="form-group"><label>Password Akun: <b>Admin</b></label><input type="text" id="set-pass-admin"></div>
-        <button class="btn-green" style="width: 100%;" onclick="saveAccountSettings()">SIMPAN PERUBAHAN</button>
-        <button class="btn-gray" style="width: 100%; margin-top: 5px;" onclick="closeModal()">BATAL</button>
-    </div></div>
+<div id="modal-account" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:15px;">
+            <h3>🔐 Pengaturan Password</h3>
+            <button class="btn-red" onclick="closeModal()" style="padding: 5px 10px;">X</button>
+        </div>
+
+        <div class="form-group">
+            <label>Password Agus (Driver)</label>
+            <input type="text" id="set-pass-agus" style="width: 100%; padding: 8px; margin-top: 5px;">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label>Password Dani (Admin)</label>
+            <input type="text" id="set-pass-dani" style="width: 100%; padding: 8px; margin-top: 5px;">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label>Password Admin</label>
+            <input type="text" id="set-pass-admin" style="width: 100%; padding: 8px; margin-top: 5px;">
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+            <label>Password Owner (Pemilik)</label>
+            <input type="text" id="set-pass-owner" style="width: 100%; padding: 8px; margin-top: 5px;">
+        </div>
+
+        <p style="font-size: 0.75rem; color: #666; font-style: italic; margin-top: 15px; border-left: 3px solid var(--primary); padding-left: 10px;">
+            *Password yang diubah di sini akan otomatis tersimpan dan disinkronkan ke Cloud (Firebase).
+        </p>
+        
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn-green" style="flex:2; padding: 12px;" onclick="saveAccountSettings()">✅ SIMPAN PERUBAHAN</button>
+            <button class="btn-gray" style="flex:1; padding: 12px;" onclick="closeModal()">✖ BATAL</button>
+        </div>
+    </div>
+</div>
 
     <div id="modal-expense" class="modal"><div class="modal-content">
         <h2 id="expense-modal-title">Catat Biaya Operasional</h2>
@@ -219,10 +412,18 @@
             <input type="hidden" id="edit-id">
             <div class="form-group"><label>Nama Trip / Tujuan</label><input type="text" id="f-trip" required></div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-<div class="form-group">
-    <label>Tanggal Berangkat</label>
-    <input type="date" id="f-date" required onchange="openScheduleModal(this.value)">
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+    <div class="form-group">
+        <label>Tanggal Berangkat</label>
+        <input type="date" id="f-date" required onchange="openScheduleModal(this.value)">
+    </div>
+    <div class="form-group">
+        <label>Jam Berangkat</label>
+        <input type="time" id="f-time" required>
+    </div>
 </div>
+
                 <div class="form-group"><label>Unit Bus</label><input list="bus-options" id="f-bus-input" placeholder="Cari..." required onchange="syncBusId(this.value)"><datalist id="bus-options"></datalist><input type="hidden" id="f-bus"></div>
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -265,7 +466,7 @@
         const KEYS = { BUS: 'bus_pro_v39_buses', SCHED: 'bus_pro_v39_scheds', EXP: 'bus_pro_v39_exps', USER: 'bus_pro_session', PASS: 'bus_pro_passwords' };
         let buses = [], schedules = [], expenses = [], currDate = new Date();
         let currentUser = null;
-        let passwords = { "Agus": "123", "Rudi": "123", "Admin": "eratrans" };
+        let passwords = { "Agus": "123", "Dani": "123", "Admin": "madhacker", "Owner": "tisal2026" };
         let myChart = null;
         let currentEditExpenseId = null;
 
@@ -286,30 +487,105 @@
 
         function handleLogout() { sessionStorage.removeItem(KEYS.USER); location.reload(); }
 
-        function showMainApp() {
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            document.getElementById('current-user-display').innerText = "👤 User: " + currentUser;
-            loadData();
-        }
+
+
+function showMainApp() {
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('current-user-display').innerText = "👤 User: " + currentUser;
+    
+    // --- 1. PEMBATASAN UNTUK OWNER (Hanya Admin Utama yang bisa Setting Akun) ---
+    const btnSetting = document.querySelector('.btn-orange[onclick="openAccountSettings()"]');
+    if (currentUser !== "Admin") {
+        if(btnSetting) btnSetting.style.display = 'none';
+    } else {
+        if(btnSetting) btnSetting.style.display = 'inline-flex';
+    }
+
+    // --- 2. PEMBATASAN UNTUK AGUS (DRIVER) ---
+    const financeCards = document.querySelectorAll('.card'); 
+    const btnExport = document.querySelector('.btn-green[onclick="openExportModal()"]');
+    const btnBackup = document.querySelector('.btn-gray[onclick="exportBackup()"]');
+    const btnRestore = document.querySelector('.btn-gray[onclick*="importFile"]');
+
+    if (currentUser === "Agus") {
+        // Sembunyikan Ringkasan Keuangan (Card index 1) & Tabel Pengeluaran (Card index 2)
+        if(financeCards[1]) financeCards[1].style.display = 'none';
+        if(financeCards[2]) financeCards[2].style.display = 'none';
+        
+        // Sembunyikan Tombol Export & Backup & Restore
+        if(btnExport) btnExport.style.display = 'none';
+        if(btnBackup) btnBackup.style.display = 'none';
+        if(btnRestore) btnRestore.style.display = 'none';
+
+        // Sembunyikan Tombol Biaya OPS dan Statistik Armada di Dashboard
+        const btnOps = document.querySelector('.btn-orange[onclick="openExpenseModal()"]');
+        const btnBusStats = document.querySelector('.btn-blue[onclick="openBusStatsModal()"]');
+        if(btnOps) btnOps.style.display = 'none';
+        if(btnBusStats) btnBusStats.style.display = 'none';
+        
+    } else {
+        // Tampilkan kembali untuk Dani, Owner, dan Admin
+        if(financeCards[1]) financeCards[1].style.display = 'block';
+        if(financeCards[2]) financeCards[2].style.display = 'block';
+        
+        if(btnExport) btnExport.style.display = 'inline-flex';
+        if(btnBackup) btnBackup.style.display = 'inline-flex';
+        if(btnRestore) btnRestore.style.display = 'inline-flex';
+
+        const btnOps = document.querySelector('.btn-orange[onclick="openExpenseModal()"]');
+        const btnBusStats = document.querySelector('.btn-blue[onclick="openBusStatsModal()"]');
+        if(btnOps) btnOps.style.display = 'inline-flex';
+        if(btnBusStats) btnBusStats.style.display = 'inline-flex';
+    }
+
+    loadData();
+}
+
+
+
 
         // --- ACCOUNT SETTINGS ---
-        function openAccountSettings() {
-            if (currentUser !== "Admin") { alert("Hanya Admin Utama yang bisa ubah password!"); return; }
-            document.getElementById('set-pass-agus').value = passwords["Agus"];
-            document.getElementById('set-pass-rudi').value = passwords["Rudi"];
-            document.getElementById('set-pass-admin').value = passwords["Admin"];
-            document.getElementById('modal-account').style.display = 'block';
-        }
+function openAccountSettings() {
+    if (currentUser !== "Admin" && currentUser !== "Owner") { 
+        alert("Hanya Admin Utama atau Owner yang bisa akses menu ini!"); 
+        return; 
+    }
+    
+    // Mengisi input dengan data password yang ada di variabel
+    document.getElementById('set-pass-agus').value = passwords["Agus"] || "123";
+    document.getElementById('set-pass-dani').value = passwords["Dani"] || "123";
+    document.getElementById('set-pass-admin').value = passwords["Admin"] || "eratrans";
+    document.getElementById('set-pass-owner').value = passwords["Owner"] || "tisal2026"; // Isi default jika kosong
+    
+    document.getElementById('modal-account').style.display = 'block';
+}
 
 function saveAccountSettings() {
-    passwords["Agus"] = document.getElementById('set-pass-agus').value;
-    passwords["Rudi"] = document.getElementById('set-pass-rudi').value; // Pastikan ID input benar
-    passwords["Admin"] = document.getElementById('set-pass-admin').value;
-    
-    save(); // Ini akan menyimpan ke LocalStorage DAN Firebase
-    alert("Password diperbarui dan disinkronkan ke Cloud!"); 
-    closeModal();
+    try {
+        // 1. Mengambil data dari semua input (Termasuk Owner)
+        const pAgus = document.getElementById('set-pass-agus').value;
+        const pDani = document.getElementById('set-pass-dani').value;
+        const pAdmin = document.getElementById('set-pass-admin').value;
+        const pOwner = document.getElementById('set-pass-owner').value;
+
+        // 2. Memperbarui variabel pusat agar data sinkron
+        passwords["Agus"] = pAgus;
+        passwords["Dani"] = pDani;
+        passwords["Admin"] = pAdmin;
+        passwords["Owner"] = pOwner;
+        
+        // 3. Menjalankan fungsi save() untuk kirim ke Firebase & LocalStorage
+        save(); 
+        
+        // 4. Memberikan feedback yang jelas ke user
+        alert("✅ Password diperbarui dan disinkronkan ke Cloud!"); 
+        closeModal();
+    } catch (error) {
+        // Memberi peringatan jika ada ID input yang lupa belum dibuat di HTML
+        alert("Terjadi Kesalahan: " + error.message);
+        console.error("Detail Error:", error);
+    }
 }
 
         // --- DATA SYNC ---
@@ -423,6 +699,162 @@ async function saveToCloud() {
 
 
 
+
+
+function openBusStatsModal() {
+    const tbody = document.getElementById('bus-performance-body');
+    const monthSelect = document.getElementById('stats-month-filter');
+    const yearSelect = document.getElementById('stats-year-filter');
+    
+    // --- FITUR AUTO TAHUN ---
+    // Jika dropdown tahun masih kosong, kita isi otomatis
+    if (yearSelect.options.length === 0) {
+        const currentYear = new Date().getFullYear();
+        const years = new Set();
+        
+        // Tambahkan tahun dari data jadwal yang ada
+        schedules.forEach(s => years.add(new Date(s.date).getFullYear()));
+        
+        // Tambahkan tahun sekarang dan tahun depan agar selalu update
+        years.add(currentYear);
+        years.add(currentYear + 1);
+
+        // Urutkan tahun dari yang terbaru
+        const sortedYears = Array.from(years).sort((a, b) => b - a);
+        
+        sortedYears.forEach(y => {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.text = y;
+            if (y === currentYear) opt.selected = true;
+            yearSelect.add(opt);
+        });
+    }
+    // ------------------------
+
+    const selectedMonth = monthSelect.value;
+    const selectedYear = yearSelect.value;
+    tbody.innerHTML = '';
+
+    buses.forEach(bus => {
+        // Filter Jadwal
+        const busJobs = schedules.filter(s => {
+            const d = new Date(s.date);
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const y = String(d.getFullYear());
+            return s.busId == bus.id && (selectedMonth === 'all' || m === selectedMonth) && y === selectedYear;
+        });
+
+        // Filter Pengeluaran
+        const busExps = expenses.filter(e => {
+            const d = new Date(e.date);
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const y = String(d.getFullYear());
+            return e.busId == bus.id && (selectedMonth === 'all' || m === selectedMonth) && y === selectedYear;
+        });
+
+        const totalOmzet = busJobs.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
+        const totalKeluar = busExps.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+        const profit = totalOmzet - totalKeluar;
+
+        tbody.innerHTML += `
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding:12px;"><b>${bus.name}</b><br><small>${bus.plate}</small></td>
+                <td align="center">${busJobs.length}</td>
+                <td align="right">${formatRp(totalOmzet)}</td>
+                <td align="right" style="color:var(--danger)">${formatRp(totalKeluar)}</td>
+                <td align="right" style="font-weight:bold; color:${profit >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                    ${formatRp(profit)}
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('modal-bus-stats').style.display = 'block';
+}
+
+
+
+function exportBusStatsToExcel() {
+    try {
+        const monthSelect = document.getElementById('stats-month-filter');
+        const yearSelect = document.getElementById('stats-year-filter');
+        const mName = monthSelect.options[monthSelect.selectedIndex].text;
+        const year = yearSelect.value;
+        const selectedMonth = monthSelect.value;
+
+        let tableRows = "";
+        
+        // Loop data bus untuk isi tabel
+        buses.forEach(bus => {
+            const busJobs = schedules.filter(s => {
+                const d = new Date(s.date);
+                return s.busId == bus.id && (selectedMonth === 'all' || String(d.getMonth() + 1).padStart(2,'0') === selectedMonth) && String(d.getFullYear()) === year;
+            });
+
+            const busExps = expenses.filter(e => {
+                const d = new Date(e.date);
+                return e.busId == bus.id && (selectedMonth === 'all' || String(d.getMonth() + 1).padStart(2,'0') === selectedMonth) && String(d.getFullYear()) === year;
+            });
+
+            const omzet = busJobs.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
+            const keluar = busExps.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+            const profit = omzet - keluar;
+
+            tableRows += `
+                <tr>
+                    <td>${bus.name}</td>
+                    <td>${bus.plate}</td>
+                    <td align="center">${busJobs.length}</td>
+                    <td align="right">${omzet}</td>
+                    <td align="right">${keluar}</td>
+                    <td align="right">${profit}</td>
+                </tr>`;
+        });
+
+        const template = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+            <head><meta charset="UTF-8"></head>
+            <body>
+                <h2 style="color: #005a9c;">LAPORAN PERFORMA ARMADA - TISAL GROUP</h2>
+                <p>Periode: <b>${mName} ${year}</b></p>
+                <table border="1">
+                    <thead>
+                        <tr style="background-color: #005a9c; color: white;">
+                            <th>Nama Unit</th>
+                            <th>No. Polisi</th>
+                            <th>Total Job</th>
+                            <th>Total Omzet (Rp)</th>
+                            <th>Total Biaya Ops (Rp)</th>
+                            <th>Profit Bersih (Rp)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+                <br>
+                <p><i>Dicetak otomatis pada: ${new Date().toLocaleString('id-ID')}</i></p>
+            </body>
+            </html>`;
+
+        const blob = new Blob([template], { type: 'application/vnd.ms-excel' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Laporan_Performa_${mName}_${year}.xls`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    } catch (e) {
+        alert("Gagal Export: " + e.message);
+    }
+}
+
+
+
+
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid'); grid.innerHTML = '';
             const y = currDate.getFullYear(), m = currDate.getMonth();
@@ -435,10 +867,23 @@ async function saveToCloud() {
                 const dStr = `${y}-${String(m+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
                 const dayEl = document.createElement('div');
                 dayEl.className = 'day'; dayEl.innerHTML = `<b>${i}</b>`;
-                schedules.filter(s => s.date === dStr).forEach(s => {
-                    const color = s.status === 'Lunas' ? 'var(--success)' : (s.status === 'DP' ? 'var(--warning)' : 'var(--danger)');
-                    dayEl.innerHTML += `<div class="event" style="background:${color};">${s.trip}</div>`;
-                });
+schedules.filter(s => s.date === dStr).forEach(s => {
+    const busData = buses.find(b => b.id == s.busId);
+    const busName = busData ? busData.name : 'No Bus';
+    const color = s.status === 'Lunas' ? 'var(--success)' : (s.status === 'DP' ? 'var(--warning)' : 'var(--danger)');
+    
+    // POSISI DIBALIK: Trip di Atas, Jam & Bus di Bawah
+    dayEl.innerHTML += `
+        <div class="event" style="background:${color}; text-align:left; font-size:0.9rem; padding:4px; line-height:1.3; margin-top:3px; border-radius:4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="font-weight:bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom:2px; margin-bottom:2px;">
+                ${s.trip}
+            </div>
+            <div style="font-size:0.7rem; opacity:0.9;">
+                 ${s.time} |  ${busName}
+            </div>
+        </div>`;
+});
+
                 dayEl.onclick = () => openScheduleModal(dStr); grid.appendChild(dayEl);
             }
         }
@@ -498,31 +943,49 @@ function createCardHtml(s, isUnpaidColumn) {
     const b = buses.find(x => x.id == s.busId); 
     const sisa = (parseInt(s.price)||0) - (parseInt(s.dp)||0);
     const badgeClass = s.status === 'Lunas' ? 'badge-lunas' : (s.status === 'DP' ? 'badge-dp' : 'badge-blm');
-    
+  
+
+// --- SKRIP PEMBATASAN UNTUK AGUS ---
+    // Jika bukan Agus, tampilkan sisa tagihan. Jika Agus, kosongkan.  
+	let sisaHtml = "";
+    if (currentUser !== "Agus") {
+        sisaHtml = `
+        <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:8px;">
+            <div style="font-weight:bold; font-size: 0.8rem; color:${sisa > 0 ? 'var(--danger)' : 'var(--success)'}">
+                ${sisa > 0 ? 'Sisa Tagihan: ' + formatRp(sisa) : 'SUDAH LUNAS'}
+            </div>
+        </div>`;
+    }
+	
+	
     return `
-    <div class="info-item" style="border-left-color: ${isUnpaidColumn ? 'var(--danger)' : 'var(--primary)'}">
+<div class="info-item" style="border-left-color: ${isUnpaidColumn ? 'var(--danger)' : 'var(--primary)'}">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-            <strong>${s.trip}</strong>
-            <span class="badge ${badgeClass}">${s.status}</span>
+            <strong style="font-size: 1.2rem;">${s.trip}</strong> 
+            
+            <span class="badge ${badgeClass}" style="font-size: 0.8rem;">${s.status}</span>
         </div>
-        <div class="detail-row">
-            <span>📅 <b>Tgl:</b> ${s.date}</span>
+
+        <div class="detail-row" style="font-size: 0.9rem;"> 
+            <span>📅 <b>Tgl:</b> ${s.date} <b style="color:var(--primary)">(${s.time})</b></span>
             <span>🚌 <b>Bus:</b> ${b?.name || '-'}</span>
             <span style="display: flex; justify-content: space-between; width: 100%;">
                 <span>👤 <b>Pemesan:</b> ${s.cust}</span>
                 <span style="color: var(--primary); font-weight: 500;">📞 ${s.phone}</span>
             </span>
         </div>
-        <div class="pickup-box">📍 <b>Jemput:</b> ${s.pickup || '-'}</div>
+
+        <div class="pickup-box" style="font-size: 0.8rem;">📍 <b>Jemput:</b> ${s.pickup || '-'}</div>
         
-        <span class="badge badge-user">✍️ Oleh: ${s.createdBy || 'System'}</span>
+        <span class="badge badge-user" style="font-size: 0.8rem;">✍️ Oleh: ${s.createdBy || 'System'}</span>
         
         <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:8px;">
-            <div style="font-weight:bold; color:${sisa > 0 ? 'var(--danger)' : 'var(--success)'}">
+            <div style="font-weight:bold; font-size: 0.8rem; color:${sisa > 0 ? 'var(--danger)' : 'var(--success)'}">
                 ${sisa > 0 ? 'Sisa Tagihan: ' + formatRp(sisa) : 'SUDAH LUNAS'}
             </div>
         </div>
-        <div style="display:flex; gap:5px; margin-top:10px; flex-wrap:wrap;">
+        
+        <div style="display:flex; gap:5px; margin-top:10px; flex-wrap:wrap; font-size: 0.85rem;">
             <button class="btn-orange" onclick="editSched(${s.id})">✏️ Edit</button>
             <button class="btn-gray" onclick="printInvoice(${s.id})">📄 Kwitansi</button>
             <button class="btn-green" onclick="sendWA(${s.id})">📱 WA</button>
@@ -534,27 +997,33 @@ function createCardHtml(s, isUnpaidColumn) {
 
 
 function openScheduleModal(date = '', isEdit = false) {
-    // 1. Reset Form & ID hanya jika ini BUKAN mode Edit (Input Baru)
+    // 1. Reset Form & ID jika Input Baru
     if (!isEdit) {
         document.getElementById('edit-id').value = '';
         document.getElementById('schedule-form').reset();
         document.getElementById('sched-modal-title').innerText = "Input Jadwal Sewa";
         document.getElementById('dp-group').style.display = 'none';
         document.getElementById('f-bus-input').value = ''; 
+        document.getElementById('f-time').value = ""; // Kosongkan jam untuk input baru
     }
 
     // 2. Pasang tanggal
     const dateInput = document.getElementById('f-date');
     if(date) dateInput.value = date;
     
-    // 3. Update daftar bus yang tersedia (Logic anti-dobel)
+    // 3. Update daftar bus (LOGIKA BARU: Cek Tanggal DAN Jam)
     const selectedDate = dateInput.value;
+    const selectedTime = document.getElementById('f-time').value;
     const currentId = document.getElementById('edit-id').value;
+
+    // Hanya sembunyikan bus jika Tanggal DAN Jam nya persis sama
     const bookedBusIds = schedules
-        .filter(s => s.date === selectedDate && s.id != currentId)
+        .filter(s => s.date === selectedDate && s.time === selectedTime && s.id != currentId)
         .map(s => String(s.busId));
 
+    // Sekarang bus yang beda jam akan tetap muncul di list
     const availableBuses = buses.filter(b => !bookedBusIds.includes(String(b.id)));
+    
     document.getElementById('bus-options').innerHTML = availableBuses.map(b => 
         `<option value="${b.name} (${b.plate})" data-id="${b.id}">`
     ).join('');
@@ -580,20 +1049,26 @@ document.getElementById('schedule-form').onsubmit = (e) => {
     const id = document.getElementById('edit-id').value;
     const busId = document.getElementById('f-bus').value;
     const date = document.getElementById('f-date').value;
+    const time = document.getElementById('f-time').value; // Ambil data jam
 
-    // VALIDASI DOUBLE BOOKING (Final Check)
-    const isBooked = schedules.some(s => s.date === date && s.busId == busId && s.id != id);
+    // VALIDASI BARU: Cek apakah Bus, Tanggal, DAN Jam sudah terpakai
+    const isBooked = schedules.some(s => 
+        s.date === date && 
+        s.busId == busId && 
+        s.time === time && // Validasi jam yang sama
+        s.id != id
+    );
     
     if (isBooked) {
-        alert("⚠️ Maaf, Bus ini sudah dijadwalkan pada tanggal tersebut. Silakan pilih bus lain!");
+        alert(`⚠️ Maaf, Bus ini sudah ada jadwal pada jam ${time} di tanggal tersebut!`);
         return;
     }
 
-    // ... sisa kode simpan Anda (data = { ... }, save(), dll)
     const data = { 
         id: id ? parseInt(id) : Date.now(), 
         trip: document.getElementById('f-trip').value, 
         date: date, 
+        time: time, // Simpan jam ke database
         busId: busId, 
         cust: document.getElementById('f-cust').value, 
         phone: document.getElementById('f-phone').value, 
@@ -602,7 +1077,7 @@ document.getElementById('schedule-form').onsubmit = (e) => {
         price: parseInt(document.getElementById('f-price').value), 
         status: document.getElementById('f-status').value, 
         dp: parseInt(document.getElementById('f-dp').value) || 0,
-        createdBy: currentUser // Tambahkan info siapa yang input
+        createdBy: currentUser
     };
     
     if(data.status === 'Lunas') data.dp = data.price;
@@ -627,6 +1102,7 @@ function editSched(id) {
     openScheduleModal(s.date, true);
 
     // C. Baru isi field-nya
+	document.getElementById('f-time').value = s.time || "00:00";
     document.getElementById('f-trip').value = s.trip;
     document.getElementById('f-bus').value = s.busId;
     document.getElementById('f-cust').value = s.cust;
@@ -1063,7 +1539,7 @@ function processExport() {
                 </tbody>
             </table>
             <br>
-            <p style="font-size: 8pt; color: #999;">Dicetak otomatis oleh SMART BUS MANAGER v36.0 pada ${new Date().toLocaleString('id-ID')}</p>
+            <p style="font-size: 8pt; color: #999;">Dicetak otomatis oleh SMART BUS MANAGER v3.6 pada ${new Date().toLocaleString('id-ID')}</p>
         </body>
         </html>`;
 
@@ -1084,7 +1560,32 @@ function processExport() {
 }
 
 
-        function exportBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({buses,schedules,expenses,passwords})], {type:'application/json'})); a.download=`backup.json`; a.click(); }
+        function exportBackup() {
+    // 1. Buat format waktu (YYYY-MM-DD_Jam-Menit)
+    const sekarang = new Date();
+    const tgl = sekarang.getFullYear() + "-" + 
+                String(sekarang.getMonth() + 1).padStart(2, '0') + "-" + 
+                String(sekarang.getDate()).padStart(2, '0');
+    const jam = String(sekarang.getHours()).padStart(2, '0') + "-" + 
+                String(sekarang.getMinutes()).padStart(2, '0');
+    
+    const namaFile = `Backup_SBM_${tgl}_${jam}.json`;
+
+    // 2. Proses Download
+    const data = JSON.stringify({buses, schedules, expenses, passwords});
+    const blob = new Blob([data], {type: 'application/json'});
+    const a = document.createElement('a');
+    
+    a.href = URL.createObjectURL(blob);
+    a.download = namaFile; // Nama file sekarang otomatis ada tanggal & jam
+    a.click();
+    
+    // Bersihkan memori
+    URL.revokeObjectURL(a.href);
+}
+
+
+
         function importData(e) { const r=new FileReader(); r.onload=(ev)=>{ const d=JSON.parse(ev.target.result); buses=d.buses||[]; schedules=d.schedules||[]; expenses=d.expenses||[]; passwords=d.passwords||passwords; save(); renderAll(); }; r.readAsText(e.target.files[0]); }
 
 
